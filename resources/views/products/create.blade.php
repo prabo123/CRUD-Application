@@ -132,23 +132,26 @@
             </div>
         @endif
 
-        <form method="post" action="{{ route('product.store') }}">
-            @csrf
+        <form method="POST" action="{{ route('product.store') }}" enctype="multipart/form-data">
+    @csrf
 
-            <label>Name</label>
-            <input type="text" name="name" placeholder="Enter product name" required/>
+    <label>Name</label>
+    <input type="text" name="name" placeholder="Enter product name" required/>
 
-            <label>Quantity</label>
-            <input type="number" name="qty" placeholder="Enter quantity" required/>
+    <label>Quantity</label>
+    <input type="number" name="qty" placeholder="Enter quantity" required/>
 
-            <label>Price</label>
-            <input type="number" step="0.01" name="price" placeholder="Enter price" required/>
+    <label>Price</label>
+    <input type="number" step="0.01" name="price" placeholder="Enter price" required/>
 
-            <label>Description</label>
-            <textarea name="description" placeholder="Enter product description" rows="3"></textarea>
+    <label>Description</label>
+    <textarea name="description" placeholder="Enter product description" rows="3"></textarea>
 
-            <input type="submit" value="Save Product" />
-        </form>
+    <label>Product Image</label>
+    <input type="file" name="image" accept="image/*" required/>
+
+    <input type="submit" value="Save Product" />
+</form>
 
         <a href="{{ route('product.index') }}" class="back-link">⬅ Back to Products</a>
     </div>
