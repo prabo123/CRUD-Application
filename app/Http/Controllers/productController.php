@@ -3,13 +3,17 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Product; // ✅ Corrected model name
+use App\Models\Product;
 
 class ProductController extends Controller
 {
     public function index(){
-        $products = Product::all(); // ✅ Corrected class name
-        return view('products.index', ['products' => $products]); // ✅ Corrected variable reference
+        $products = Product::all(); 
+        
+        // Debugging: Uncomment to check data
+        // dd($products); 
+        
+        return view('products.index', ['products' => $products]); 
     }
 
     public function create() {
@@ -18,39 +22,35 @@ class ProductController extends Controller
 
     public function store(Request $request){
         $data = $request->validate([
-            'name' => 'required',
-            'qty' => 'required|numeric',
-            'price' => 'required|decimal:0.2', 
-            'description' => 'nullable'
+            'name' => 'required|string|max:100', 
+            'qty' => 'required|numeric|min:1',
+            'price' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/', 
+            'description' => 'nullable|string|max:255'
         ]);
 
-        $newProduct = Product::create($data); 
+        Product::create($data); 
 
-        return redirect()->route('product.index'); 
+        return redirect()->route('product.index')->with('success', 'Product created successfully'); 
     }
 
     public function edit(Product $product){
-        return view('products.edit', ['product'=> $product ]);
+        return view('products.edit', ['product' => $product]);
     }
 
-    public function update (Product $product,Request $request){
-       $data= $request->validate ([
-        'name' => 'required',
-        'qty' => 'required|numeric',
-        'price' => 'required|decimal:0.2', 
-        'description' => 'nullable'
-       ]);
-       $product->update($data);
-       return redirect(route('product.index'))->with('success','product updated sucesfully');
+    public function update(Request $request, Product $product){
+        $data = $request->validate([
+            'name' => 'required|string|max:100',
+            'qty' => 'required|numeric|min:1',
+            'price' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/', 
+            'description' => 'nullable|string|max:255'
+        ]);
+
+        $product->update($data);
+        return redirect()->route('product.index')->with('success', 'Product updated successfully'); 
     }
 
-
-    public function destory (Product $product){
-        $product->delete($data);
-        return redirect(route('product.index'))->with('success','product deleted sucesfully');
-     }
- 
-
-    
+    public function destroy(Product $product){
+        $product->delete();
+        return redirect()->route('product.index')->with('success', 'Product deleted successfully'); 
+    }
 }
-
